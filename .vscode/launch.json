@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "name": "nestjs-dev",
+            "program": "",
+            "request": "launch",
+            "restart": true,
+            "cwd": "${workspaceFolder}/nestjs_app",
+            "runtimeExecutable": "${workspaceFolder}/nestjs_app/node_modules/.bin/nest",
+            "args": [
+                "start",
+                "--watch"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+        }
+    ]
+}
