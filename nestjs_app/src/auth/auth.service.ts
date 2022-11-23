@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+
 import { UsersService } from '../users/users/users.service';
+import { SignupDTO } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -9,10 +11,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async authenticateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
+  async authenticateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.checkPassword(email, password);
+    if (user) {
+      const { password, ...result } = user.toObject();
       return result;
     }
     return null;
@@ -21,8 +23,20 @@ export class AuthService {
   async login(user: any) {
     const payload = { email: user.email, sub: user.userId };
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
       email: user.email,
     };
+  }
+
+  async signup(user_data: SignupDTO) {
+    const userExists = await this.usersService.findOne(user_data.email);
+    if (userExists) {
+      throw new ConflictException({
+        message: 'Duplicate Email ID',
+        error_code: 'DUPLICATE_EMAIL',
+      });
+    }
+
+    return this.usersService.createUser(user_data);
   }
 }
