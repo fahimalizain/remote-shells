@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UsersService } from '../users/users/users.service';
+import { UsersService } from '../users/users.service';
 import { SignupDTO } from './dto';
 
 @Injectable()
@@ -14,8 +14,7 @@ export class AuthService {
   async authenticateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.checkPassword(email, password);
     if (user) {
-      const { password, ...result } = user.toObject();
-      return result;
+      return user;
     }
     return null;
   }
@@ -24,7 +23,7 @@ export class AuthService {
     const payload = { email: user.email, sub: user.userId };
     return {
       accessToken: this.jwtService.sign(payload),
-      email: user.email,
+      ...user,
     };
   }
 
@@ -38,5 +37,9 @@ export class AuthService {
     }
 
     return this.usersService.createUser(user_data);
+  }
+
+  async getProfile(email: string) {
+    return this.usersService.getProfile(email)
   }
 }
