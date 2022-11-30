@@ -36,6 +36,10 @@ export class UsersService {
         return this.userModel.findOne({ email });
     }
 
+    async findById(id: string): Promise<Model<UserDocument>> {
+        return await this.userModel.findById(id);
+    }
+
     async createUser(createUserDTO: CreateUserDTO) {
         const user = new this.userModel(createUserDTO);
         user.password = await bcrypt.hash(user.password, 12);
@@ -46,12 +50,8 @@ export class UsersService {
 
     async getProfile(email: string): Promise<User> {
         const userData = await this.userModel.findOne({ email });
-        const _user = new User();
-        _user.first_name = userData.first_name;
-        _user.last_name = userData.last_name;
-        _user.email = userData.email;
 
-        return _user;
+        return userData.toObject();
     }
 
     async checkPassword(
