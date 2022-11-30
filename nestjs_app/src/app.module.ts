@@ -6,6 +6,7 @@ import { DevicesModule } from './devices/devices.module';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { WorkspaceModule } from './workspace/workspace.module';
     UsersModule,
     MongooseModule.forRoot('mongodb://localhost/remoteshells'),
     WorkspaceModule,
+    UtilsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
