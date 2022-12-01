@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument, Types as MongooseTypes } from 'mongoose';
-import { User } from 'src/users/user.schema';
+import { User, UserDocument } from 'src/users/user.schema';
 
 export type WorkspaceDocument = HydratedDocument<Workspace>;
 
@@ -14,12 +14,12 @@ export class Workspace {
         ref: User.name,
         required: true,
     })
-    owner_user: User;
+    owner_user: UserDocument;
 
     @Prop({
         type: [{ type: MongooseTypes.ObjectId, ref: User.name }],
     })
-    members: User[];
+    members: UserDocument[];
 
     @Prop({
         type: [

@@ -10,6 +10,8 @@ import { LocalStrategy } from './local.strategy';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { ActiveUser } from './active-user';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   controllers: [AuthController],
@@ -21,6 +23,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    ActiveUser,
   ],
   imports: [
     UsersModule,
@@ -32,5 +35,8 @@ import { JwtAuthGuard } from './jwt-auth.guard';
       },
     }),
   ],
+  exports: [
+    AuthService,
+  ]
 })
 export class AuthModule {}

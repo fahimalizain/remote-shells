@@ -8,14 +8,14 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { CreateWorkspaceDTO } from './dto';
 import { Workspace, WorkspaceDocument } from './workspace.schema';
-import { UsersService } from '../users/users.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class WorkspaceService {
     constructor(
         @InjectModel(Workspace.name)
         private workspaceModel: Model<WorkspaceDocument>,
-        private userService: UsersService,
+        private authService: AuthService,
     ) {}
 
     async createWorkspace(data: CreateWorkspaceDTO) {
@@ -43,11 +43,19 @@ export class WorkspaceService {
         if (!workspace) {
             throw new NotFoundException({
                 error_code: 'NOT_FOUND',
-                message: `Workspace ${workspace} not found`,
+                message: `Workspace ${workspace_id} not found`,
             });
         }
 
-        // TODO: Verify Workspace belongs to the active User
+        // Verify current User is a Member of the Workspace
+        const user = this.authService.getActiveUser();
+        console.log("getWP", user)
+        if (!workspace.members.find(x => x._id == user.userId)) {
+            throw new NotFoundException({
+                error_code: 'NOT_FOUND',
+                message: `Workspace ${workspace_id} not found`,
+            });
+        }
 
         return workspace;
     }
